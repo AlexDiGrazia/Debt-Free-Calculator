@@ -1,38 +1,115 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  /* text-align: center; */
 }
 
 .App-header {
-  background-color: #282c34;
+  /* background-color: #282c34; */
+  background-color: #F0EBEB;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgb(255, 248, 248);
+  /* text-shadow: rgb(83, 81, 81) 1px 1px; */
+  font-weight: 400;
 }
 
-.App-link {
-  color: #61dafb;
+form {
+  width: 600px;
+  height: 600px;
+  background-color: #383d3b;
+  padding: 30px;
+  border: transparent;
+  border-radius: 3px;
+  position: relative;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.remaining-payments {
+  width: 23%;
+  height: 15%;
+  position: absolute;
+  top: 20px;
+  right: 42px;
+  background-color: #F0EBEB;
+  text-align: center;
+  color:#383d3b;
+  font-weight: 500;
 }
+
+.remaining-payments h3 {
+  font-size: 18px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.remaining-payments p {
+  margin-top: 0;
+}
+
+input { 
+  padding-left: 8px;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  background-color:#F0EBEB;
+}
+
+label {
+  margin-left: 5%;
+}
+
+#make-payment { margin-bottom: 0;}
+
+p#one-percent {
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.payment-history {
+  text-align: center;
+  overflow: scroll;
+  max-height: 73%;
+  color:#383d3b;
+  text-shadow: none;
+  font-weight: 600;
+  background-color:#F0EBEB;
+}
+
+.payment-history-header {
+  display: flex;
+  justify-content: space-evenly;
+  border-bottom: 1px solid #383d3b;
+}
+
+.payment-history-header h3 { font-size: 16px;}
+
+.payment-entry:nth-child(even) {
+background-color: rgb(164, 164, 164);
+}
+
+.payment-entry:nth-child(odd) {
+  background-color: #F0EBEB;
+}
+
+.payment-entry {
+  /* margin: 20px 0; */
+  padding: 10px 0;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid #383d3b;
+}
+
+
+
+#last-input {
+  display: inline;
+}
+
+#submit {
+  margin-left: 10px;
+}
+
