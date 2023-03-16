@@ -19,7 +19,8 @@ class Form extends React.Component {
 
   handleChange = (e, value) => {
     if (value === "principal") {
-      this.principal = e.target.value;
+      this.principal = +e.target.value;
+      this.principalEvent = +e.target;
       this.setState({ [value]: +e.target.value });
     } else if (value === "EstMonthlyPayment") {
       this.setState({
@@ -38,7 +39,9 @@ class Form extends React.Component {
       this.onePercentMinCheck(e);
       this.setState({ [value]: +e.target.value });
       this.amountEvent = e;
-      
+      this.principal = this.state.principal;
+      this.setState({ remainingPayments: 0 });
+      this.count = 0;
     } else {
       this.setState({ [value]: +e.target.value });
     }
@@ -47,7 +50,7 @@ class Form extends React.Component {
   enableFinalPayment = (e) => {
     const { principal } = this.state;
     if (principal <= 100) {
-      +e.target.value >= principal + (principal * 0.01) + (principal * 0.05)
+      +e.target.value >= principal + principal * 0.01 + principal * 0.05
         ? this.setState({ isButtonDisabled: false })
         : this.setState({ isButtonDisabled: true });
     }
@@ -77,10 +80,10 @@ class Form extends React.Component {
   remaining = () => {
     const { interest } = this.state;
     let princApplied = this.amount - this.principal * interest;
-
+    console.log(this.amount, this.principal, this.count)
     this.principal = this.principal - princApplied;
-    if (this.principal <= 0) {
-      this.setState({ remainingPayments: this.count });
+    if (this.principal <= 100) {
+      this.setState({ remainingPayments: this.count + 1});
       //    return
     } else {
       this.count++;
@@ -94,23 +97,32 @@ class Form extends React.Component {
 
   updateMinimumPayment = (e) => {
     const { principal, Amount, interest } = this.state;
-    const lastPayment = principal - (Amount - principal * interest)
-    if (lastPayment <= 100 ) {
-      this.minimumPayment = `$${(lastPayment + (lastPayment * 0.01) + (lastPayment * 0.05)).toFixed(2)}`;
+    const lastPayment = principal - (Amount - principal * interest);
+    if (lastPayment <= 100) {
+      this.minimumPayment = `$${(
+        lastPayment +
+        lastPayment * 0.01 +
+        lastPayment * 0.05
+      ).toFixed(2)}`;
     } else {
       return (this.minimumPayment = `$${(
         this.state.principal * 0.01 +
         this.state.principal * this.getPercentage(+e.target.value)
       ).toFixed(2)}`);
     }
-   
   };
 
   buttonFunction = () => {
     const { principal, Amount, interest } = this.state;
     const entry = document.createElement("div");
     entry.className = "payment-entry";
-    entry.innerHTML = `<div>$${Amount.toFixed(2)}</div>$${(Amount -principal * interest).toFixed(2)}</div><div>$${(principal -(Amount - principal * interest)).toFixed(2)}`;
+    entry.innerHTML = `<div>$${Amount.toFixed(2)}</div>$${(
+      Amount -
+      principal * interest
+    ).toFixed(2)}</div><div>$${(
+      principal -
+      (Amount - principal * interest)
+    ).toFixed(2)}`;
     document.getElementById("payment-log").appendChild(entry);
     this.updatePrincipal();
     this.state.remainingPayments === 0
@@ -118,13 +130,7 @@ class Form extends React.Component {
       : this.setState({ remainingPayments: this.state.remainingPayments - 1 });
 
     this.updateMinimumPayment(this.interestEvent);
-    console.log(this.amount)
-    console.log(this.state.Amount)
-    if (this.amount != this.state.Amount) {
-      // this.count = 0;
-      console.log('go')
-      this.remaining();
-    }
+    
   };
 
   updatePrincipal = () => {
@@ -136,14 +142,18 @@ class Form extends React.Component {
   checkFinalPayment = (e) => {
     const { principal, Amount, interest } = this.state;
     if (
-      principal - (Amount - principal * interest) <= 100 
-      &&
-      !(+e.target.value > (principal - (Amount - principal * interest)) + ((principal - (Amount - principal * interest)) * 0.01))
+      principal - (Amount - principal * interest) <= 100 &&
+      !(
+        +e.target.value >
+        principal -
+          (Amount - principal * interest) +
+          (principal - (Amount - principal * interest)) * 0.01
+      )
     ) {
       +e.target.value >= principal + principal * 0.01
         ? this.setState({ isButtonDisabled: false })
         : this.setState({ isButtonDisabled: true });
-      }
+    }
   };
 
   render() {
