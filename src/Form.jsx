@@ -101,7 +101,7 @@ class Form extends React.Component {
   };
 
   getPercentage = (interest) => {
-    return interest / 100;
+    return (interest / 100) / 12;
   };
 
   updateMinimumPayment = (e) => {
