@@ -12,6 +12,7 @@ class Form extends React.Component {
       Amount: 0,
       isButtonDisabled: true,
       remainingPayments: 0,
+      paymentHistory: [],
     };
     this.count = 0;
     this.AmountEntries = 0;
@@ -40,8 +41,17 @@ class Form extends React.Component {
       this.setState({ [value]: +e.target.value });
       this.amountEvent = e;
       this.principal = this.state.principal;
-      this.setState({ remainingPayments: 0 });
-      this.count = 0;
+      if(this.state.remainingPayments === 1) {
+        this.count = 1
+      } else {
+        this.setState({ remainingPayments: 0 });
+        this.count = 0;
+      }
+
+      // this.setState({ remainingPayments: 0 });
+      // this.state.remainingPayments === 1 
+      // ? this.count = 1
+      // : this.count = 0;
     } else {
       this.setState({ [value]: +e.target.value });
     }
@@ -80,7 +90,6 @@ class Form extends React.Component {
   remaining = () => {
     const { interest } = this.state;
     let princApplied = this.amount - this.principal * interest;
-    console.log(this.amount, this.principal, this.count)
     this.principal = this.principal - princApplied;
     if (this.principal <= 100) {
       this.setState({ remainingPayments: this.count + 1});
@@ -114,16 +123,16 @@ class Form extends React.Component {
 
   buttonFunction = () => {
     const { principal, Amount, interest } = this.state;
-    const entry = document.createElement("div");
-    entry.className = "payment-entry";
-    entry.innerHTML = `<div>$${Amount.toFixed(2)}</div>$${(
-      Amount -
-      principal * interest
-    ).toFixed(2)}</div><div>$${(
-      principal -
-      (Amount - principal * interest)
-    ).toFixed(2)}`;
-    document.getElementById("payment-log").appendChild(entry);
+    this.setState((prev) => ({
+      paymentHistory: [
+        ...prev.paymentHistory, 
+        {
+        payment: Amount.toFixed(2),
+        applied: (Amount - principal * interest).toFixed(2),
+        balance: (principal - ( Amount - principal * interest)).toFixed(2),
+        }
+      ]
+    }))
     this.updatePrincipal();
     this.state.remainingPayments === 0
       ? this.remaining()
@@ -181,7 +190,7 @@ class Form extends React.Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <div class="remaining-payments">
+          <div className="remaining-payments">
             <h3>Payments Remaining</h3>
             <p>{this.state.remainingPayments}</p>
           </div>
@@ -206,7 +215,7 @@ class Form extends React.Component {
           <p id="one-percent">
             Minimum payment required: {this.minimumPayment}
           </p>
-          <PaymentHistory />
+          <PaymentHistory history={this.state.paymentHistory} />
         </form>
       </div>
     );
