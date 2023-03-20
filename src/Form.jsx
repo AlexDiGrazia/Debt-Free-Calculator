@@ -15,7 +15,6 @@ class Form extends React.Component {
       paymentHistory: [],
     };
     this.count = 0;
-    this.AmountEntries = 0;
   }
 
   handleChange = (e, value) => {
@@ -35,7 +34,6 @@ class Form extends React.Component {
       this.minimumPayment = this.updateMinimumPayment(e);
       this.interestEvent = e;
     } else if (value === "Amount") {
-      this.AmountEntries++;
       this.amount = +e.target.value;
       this.onePercentMinCheck(e);
       this.setState({ [value]: +e.target.value });
@@ -48,10 +46,7 @@ class Form extends React.Component {
         this.count = 0;
       }
 
-      // this.setState({ remainingPayments: 0 });
-      // this.state.remainingPayments === 1 
-      // ? this.count = 1
-      // : this.count = 0;
+
     } else {
       this.setState({ [value]: +e.target.value });
     }
