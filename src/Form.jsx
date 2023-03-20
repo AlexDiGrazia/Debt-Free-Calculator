@@ -79,12 +79,12 @@ class Form extends React.Component {
 
   updateMinimumPayment = (e) => {
     const { principal, amount, interest } = this.state;
-    const lastPayment = principal - (amount - principal * interest);
-    if (lastPayment <= 100) {
+    const remainingBalance = principal - (amount - principal * interest);
+    if (remainingBalance <= 100) {
       this.minimumPayment = `$${(
-        lastPayment +
-        lastPayment * 0.01 +
-        lastPayment * 0.05
+        remainingBalance +
+        remainingBalance * 0.01 
+        
       ).toFixed(2)}`;
     } else {
       return (this.minimumPayment = `$${(
