@@ -66,11 +66,9 @@ class Form extends React.Component {
 
   enableFinalPayment = (e) => {
     const { principal } = this.state;
-    if (principal <= 100) {
-      +e.target.value >= principal + principal * 0.01 + principal * 0.05
-        ? this.setState({ isButtonDisabled: false })
-        : this.setState({ isButtonDisabled: true });
-    }
+    +e.target.value >= principal + principal * 0.01
+      ? this.setState({ isButtonDisabled: false })
+      : this.setState({ isButtonDisabled: true });
   };
 
   getPercentage = (interest) => {
@@ -84,7 +82,6 @@ class Form extends React.Component {
       this.minimumPayment = `$${(
         remainingBalance +
         remainingBalance * 0.01 
-        
       ).toFixed(2)}`;
     } else {
       return (this.minimumPayment = `$${(
