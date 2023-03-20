@@ -3,8 +3,8 @@ import React from "react";
 import PaymentHistory from "./PaymentHistory";
 
 class Form extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       principal: 0,
       interest: 0,
@@ -28,15 +28,14 @@ class Form extends React.Component {
 
   handlePrincipal = (e, value) => {
     this.principal = +e.target.value;
-    this.principalEvent = +e.target;
     this.setState({ [value]: +e.target.value });
-  }
+  };
 
   handleInterest = (e, value) => {
     this.setState({ [value]: this.getPercentage(+e.target.value) });
     this.minimumPayment = this.updateMinimumPayment(e);
     this.interestEvent = e;
-  }
+  };
 
   handleAmount = (e, value) => {
     this.payment = +e.target.value;
@@ -50,23 +49,29 @@ class Form extends React.Component {
       this.setState({ remainingPayments: 0 });
       this.count = 0;
     }
-  }
+  };
 
   onePercentMinCheck = (e) => {
     const { principal, interest } = this.state;
     if (principal <= 100) {
       this.enableFinalPayment(e);
     } else {
-      +e.target.value >= principal * 0.01 + principal * interest &&
-      +e.target.value <= principal + principal * interest
-        ? this.setState({ isButtonDisabled: false })
-        : this.setState({ isButtonDisabled: true });
+      const doesPaymentMeetMinAndNotExceedMax =
+        +e.target.value >= principal * 0.01 + principal * interest &&
+        +e.target.value <= principal + principal * interest;
+      this.buttonDisableTrueOrFalse(doesPaymentMeetMinAndNotExceedMax);
     }
   };
 
   enableFinalPayment = (e) => {
     const { principal } = this.state;
-    +e.target.value >= principal + principal * 0.01
+    const isFinalPaymentSufficient =
+      +e.target.value >= principal + principal * 0.01;
+    this.buttonDisableTrueOrFalse(isFinalPaymentSufficient);
+  };
+
+  buttonDisableTrueOrFalse = (condition) => {
+    condition
       ? this.setState({ isButtonDisabled: false })
       : this.setState({ isButtonDisabled: true });
   };
@@ -81,7 +86,7 @@ class Form extends React.Component {
     if (remainingBalance <= 100) {
       this.minimumPayment = `$${(
         remainingBalance +
-        remainingBalance * 0.01 
+        remainingBalance * 0.01
       ).toFixed(2)}`;
     } else {
       return (this.minimumPayment = `$${(
@@ -111,7 +116,7 @@ class Form extends React.Component {
         },
       ],
     }));
-  }
+  };
 
   updatePrincipal = () => {
     const { principal, amount, interest } = this.state;
@@ -120,40 +125,33 @@ class Form extends React.Component {
 
   checkFinalPayment = (e) => {
     const { principal, amount, interest } = this.state;
-    if (
-      principal - (amount - principal * interest) <= 100 &&
-      !(
-        +e.target.value >
-        principal -
-          (amount - principal * interest) +
-          (principal - (amount - principal * interest)) * 0.01
-      )
-    ) {
-      +e.target.value >= principal + principal * 0.01
-        ? this.setState({ isButtonDisabled: false })
-        : this.setState({ isButtonDisabled: true });
+    let principalApplied = amount - principal * interest;
+    let balanceAfterPayment = principal - principalApplied;
+    if (balanceAfterPayment <= 100) {
+      const willAmountCoverFinalPayment =
+        +e.target.value >= balanceAfterPayment + balanceAfterPayment * 0.01;
+      this.buttonDisableTrueOrFalse(willAmountCoverFinalPayment);
     }
   };
 
   setRemainingPaymentsAmount = () => {
     this.state.remainingPayments === 0
-      ? this.remaining()
+      ? this.remainingPaymentsCounter()
       : this.setState({ remainingPayments: this.state.remainingPayments - 1 });
   };
 
-  remaining = () => {
+  remainingPaymentsCounter = () => {
     const { interest } = this.state;
-    let portionOfPaymentAppliedToPrincipal = this.payment - this.principal * interest;
+    let portionOfPaymentAppliedToPrincipal =
+      this.payment - this.principal * interest;
     this.principal = this.principal - portionOfPaymentAppliedToPrincipal;
     if (this.principal <= 100) {
       this.setState({ remainingPayments: this.count + 1 });
     } else {
       this.count++;
-      this.remaining();
+      this.remainingPaymentsCounter();
     }
   };
-
-
 
   handleSubmit = (e) => {
     e.preventDefault();
